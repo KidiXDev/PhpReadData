@@ -1,9 +1,10 @@
 # PhpReadData
 
-PhpReadData is a simple RUD (Read, Update, Delete) application built using PHP and MySQL. This project demonstrates basic operations on a database, including searching, pagination, and data formatting.
+PhpReadData is a simple native CRUD (Create, Read, Update, Delete) application built using PHP and MySQL. This project demonstrates basic operations on a database, including searching, pagination, and data formatting.
 
 ## Features
 
+- **Create**: Add new items
 - **Read**: View a list of items with pagination and search functionality.
 - **Update**: Edit existing items.
 - **Delete**: Remove items from the database.
@@ -44,10 +45,12 @@ PhpReadData is a simple RUD (Read, Update, Delete) application built using PHP a
 
 ## File Structure
 
-- `index.php`: Main page displaying the list of items.
+- `index.php`: Main page displaying the list of items with pagination and search functionality.
 - `edit.php`: Page for editing existing items.
+- `add.php`: Page for adding new items.
 - `delete.php`: Script for deleting items.
 - `koneksi.php`: Database connection script.
+- `scripts/convert.js`: JavaScript file for handling any client-side data conversion.
 
 ## License
 

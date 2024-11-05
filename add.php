@@ -52,7 +52,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             <div class="flex gap-8 mt-5">
                 <input type="submit" value="Add" class="bg-green-500 text-white rounded px-4 py-2 w-full hover:bg-green-600 cursor-pointer transition">
-                <a class="inline-block text-center bg-red-500 text-white rounded px-4 py-2 hover:bg-red-600 w-full" href="index.php">Cancel</a>
+                <a class="inline-block text-center bg-red-500 text-white rounded px-4 py-2 hover:bg-red-600 w-full transition" href="index.php">Cancel</a>
             </div>
         </form>
     </div>

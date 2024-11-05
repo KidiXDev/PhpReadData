@@ -1,9 +1,13 @@
 <?php
+include 'session.php';
 include 'koneksi.php';
 
-$id = $_GET['id'];
-$sql = "SELECT id, nama_barang, jumlah, harga FROM barang WHERE id=$id";
-$result = $conn->query($sql);
+$id = intval($_GET['id']);
+$sql = "SELECT id, nama_barang, jumlah, harga FROM barang WHERE id=?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $id);
+$stmt->execute();
+$result = $stmt->get_result();
 
 if ($result->num_rows > 0) {
     $row = $result->fetch_assoc();
@@ -14,18 +18,18 @@ if ($result->num_rows > 0) {
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nama_barang = $_POST['nama_barang'];
-    $jumlah = $_POST['jumlah'];
-
-    // Menghapus simbol 'Rp' dan titik dari harga
+    $jumlah = intval($_POST['jumlah']);
     $harga = str_replace(['Rp ', '.'], '', $_POST['harga']);
 
-    $update_sql = "UPDATE barang SET nama_barang='$nama_barang', jumlah='$jumlah', harga='$harga' WHERE id=$id";
+    $update_sql = "UPDATE barang SET nama_barang=?, jumlah=?, harga=? WHERE id=?";
+    $stmt = $conn->prepare($update_sql);
+    $stmt->bind_param("siii", $nama_barang, $jumlah, $harga, $id);
 
-    if ($conn->query($update_sql) === TRUE) {
+    if ($stmt->execute() === TRUE) {
         header("Location: index.php");
         exit;
     } else {
-        echo "Error updating record: " . $conn->error;
+        echo "Error updating record: " . $stmt->error;
     }
 }
 ?>

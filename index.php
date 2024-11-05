@@ -1,20 +1,29 @@
 <?php
+include 'session.php';
 include 'koneksi.php';
 
-$search = isset($_GET['search']) ? $_GET['search'] : '';
+$search = isset($_GET['search']) ? $conn->real_escape_string($_GET['search']) : '';
 
 $limit = 10;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($page - 1) * $limit;
 
-$total_sql = "SELECT COUNT(*) as total FROM barang WHERE nama_barang LIKE '%$search%'";
-$total_result = $conn->query($total_sql);
+$total_sql = "SELECT COUNT(*) as total FROM barang WHERE nama_barang LIKE ?";
+$stmt = $conn->prepare($total_sql);
+$search_param = "%$search%";
+$stmt->bind_param("s", $search_param);
+$stmt->execute();
+$total_result = $stmt->get_result();
 $total_row = $total_result->fetch_assoc();
 $total_records = $total_row['total'];
 $total_pages = ceil($total_records / $limit);
+$stmt->close();
 
-$sql = "SELECT id, nama_barang, jumlah, harga FROM barang WHERE nama_barang LIKE '%$search%' LIMIT $limit OFFSET $offset";
-$result = $conn->query($sql);
+$sql = "SELECT id, nama_barang, jumlah, harga FROM barang WHERE nama_barang LIKE ? LIMIT ? OFFSET ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("sii", $search_param, $limit, $offset);
+$stmt->execute();
+$result = $stmt->get_result();
 ?>
 
 <!DOCTYPE html>
@@ -29,37 +38,7 @@ $result = $conn->query($sql);
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <style>
-        .column-id {
-            width: 50px;
-        }
-
-        .column-nama {
-            width: 200px;
-        }
-
-        .column-jumlah {
-            width: 100px;
-        }
-
-        .column-harga {
-            width: 150px;
-        }
-
-        .column-action {
-            width: 150px;
-        }
-
-        input[type="number"] {
-            -moz-appearance: textfield;
-        }
-
-        input[type="number"]::-webkit-inner-spin-button,
-        input[type="number"]::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-    </style>
+    <link rel="stylesheet" href="index.css">
 </head>
 
 <body class="bg-gray-100 font-sans">
@@ -68,12 +47,15 @@ $result = $conn->query($sql);
 
         <div class="flex justify-between mb-5">
             <!-- Search Form -->
-            <form method="GET" class="w-10 flex">
-                <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>" placeholder="Search..." class="border rounded-l py-2 px-4 flex-1">
-                <button type="submit" class="bg-green-500 text-white rounded-r px-4 py-2 hover:opacity-80 transition">Search</button>
+            <form method="GET" class="flex">
+                <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>" placeholder="Search" class="border rounded-l py-2 px-4 flex-1">
+                <button type="submit" class="bg-green-500 text-white rounded-r px-4 py-2 hover:opacity-80 transition"><i class="fa-solid fa-magnifying-glass"></i> </button>
             </form>
 
-            <a class='inline-block w-20 text-center content-center bg-green-500 text-white rounded px-3 py-1 hover:opacity-80 transition' href='add.php?id=" . $row["id"] . "'><i class="fa-solid fa-plus"></i> Add</a>
+            <div class="flex gap-3">
+                <a class='inline-block w-28 text-center content-center bg-red-500 text-white rounded px-3 py-1 hover:opacity-80 transition' href="logout.php"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+                <a class='inline-block w-28 text-center content-center bg-green-500 text-white rounded px-3 py-1 hover:opacity-80 transition' href='add.php'><i class="fa-solid fa-plus"></i> Add</a>
+            </div>
         </div>
 
         <table class="min-w-full mt-5 border-collapse">
@@ -117,7 +99,7 @@ $result = $conn->query($sql);
             <div class="flex items-center space-x-2">
                 <!-- prev -->
                 <?php if ($page > 1): ?>
-                    <a href="?search=<?php echo htmlspecialchars($search); ?>&page=<?php echo $page - 1; ?>" class="px-3 py-2 text-white bg-green-500 rounded hover:bg-green-400 w-24 text-center transition"><i class="fa-solid fa-backward"></i></a>
+                    <a href="?search=<?php echo htmlspecialchars($search); ?>&page=<?php echo $page - 1; ?>" class="px-5 py-2 text-white bg-green-500 rounded hover:bg-green-400 text-center transition"><i class="fa-solid fa-backward"></i></a>
                 <?php endif; ?>
 
                 <form method="GET" class="flex items-center space-x-1">
@@ -127,7 +109,7 @@ $result = $conn->query($sql);
 
                 <!-- next -->
                 <?php if ($page < $total_pages): ?>
-                    <a href="?search=<?php echo htmlspecialchars($search); ?>&page=<?php echo $page + 1; ?>" class="px-3 py-2 text-white bg-green-500 rounded hover:bg-green-400 w-24 text-center transition"><i class="fa-solid fa-forward"></i></a>
+                    <a href="?search=<?php echo htmlspecialchars($search); ?>&page=<?php echo $page + 1; ?>" class="px-5 py-2 text-white bg-green-500 rounded hover:bg-green-400 text-center transition"><i class="fa-solid fa-forward"></i></a>
                 <?php endif; ?>
             </div>
         </div>

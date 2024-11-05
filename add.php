@@ -1,4 +1,5 @@
 <?php
+include 'session.php';
 include 'koneksi.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -7,14 +8,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $harga = str_replace(['Rp ', '.'], '', $_POST['harga']);
 
-    $insert_sql = "INSERT INTO barang (nama_barang, jumlah, harga) VALUES ('$nama_barang', '$jumlah', '$harga')";
+    $stmt = $conn->prepare("INSERT INTO barang (nama_barang, jumlah, harga) VALUES (?, ?, ?)");
+    $stmt->bind_param("sis", $nama_barang, $jumlah, $harga);
 
-    if ($conn->query($insert_sql) === TRUE) {
+    if ($stmt->execute()) {
         header("Location: index.php");
         exit;
     } else {
-        echo "Error inserting record: " . $conn->error;
+        echo "Error inserting record: " . $stmt->error;
     }
+
+    $stmt->close();
 }
 ?>
 

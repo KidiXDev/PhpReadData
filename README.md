@@ -122,3 +122,11 @@ PhpReadData includes basic login functionality to restrict access. Users need to
 ## 📝 License
 
 This project is licensed under the MIT License, allowing you to use, modify, and distribute it freely. For more information, see the [LICENSE](LICENSE) file.
+
+## ❤️ Support Me
+
+If you find this project helpful and would like to support my work, consider buying me a coffee:
+
+<a href="https://www.buymeacoffee.com/kidixdev"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" width="200" /></a>
+
+Thank you for your support!

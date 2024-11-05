@@ -1,0 +1,29 @@
+.column-id {
+  width: 50px;
+}
+
+.column-nama {
+  width: 200px;
+}
+
+.column-jumlah {
+  width: 100px;
+}
+
+.column-harga {
+  width: 150px;
+}
+
+.column-action {
+  width: 150px;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

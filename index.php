@@ -19,6 +19,7 @@ $result = $conn->query($sql);
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,22 +28,28 @@ $result = $conn->query($sql);
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         .column-id {
             width: 50px;
         }
+
         .column-nama {
             width: 200px;
         }
+
         .column-jumlah {
             width: 100px;
         }
+
         .column-harga {
             width: 150px;
         }
+
         .column-action {
             width: 150px;
         }
+
         input[type="number"] {
             -moz-appearance: textfield;
         }
@@ -54,15 +61,20 @@ $result = $conn->query($sql);
         }
     </style>
 </head>
+
 <body class="bg-gray-100 font-sans">
     <div class="container mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
         <h1 class="text-5xl mb-3 font-semibold text-center text-green-500">Data Barang</h1>
-        
-        <!-- Search Form -->
-        <form method="GET" class="mb-5 w-10 flex">
-            <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>" placeholder="Search..." class="border rounded-l py-2 px-4 flex-1">
-            <button type="submit" class="bg-green-500 text-white rounded-r px-4 py-2 hover:opacity-80 transition">Search</button>
-        </form>
+
+        <div class="flex justify-between mb-5">
+            <!-- Search Form -->
+            <form method="GET" class="w-10 flex">
+                <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>" placeholder="Search..." class="border rounded-l py-2 px-4 flex-1">
+                <button type="submit" class="bg-green-500 text-white rounded-r px-4 py-2 hover:opacity-80 transition">Search</button>
+            </form>
+
+            <a class='inline-block w-20 text-center content-center bg-green-500 text-white rounded px-3 py-1 hover:opacity-80 transition' href='add.php?id=" . $row["id"] . "'><i class="fa-solid fa-plus"></i> Add</a>
+        </div>
 
         <table class="min-w-full mt-5 border-collapse">
             <thead class="bg-green-500 text-white">
@@ -78,13 +90,13 @@ $result = $conn->query($sql);
                 <?php
                 if ($result->num_rows > 0) {
                     $counter = 0;
-                    while($row = $result->fetch_assoc()) {
+                    while ($row = $result->fetch_assoc()) {
                         $rowClass = $counter % 2 === 0 ? 'bg-white' : 'bg-gray-100';
                         echo "<tr class='$rowClass hover:bg-gray-200'>
-                                <td class='py-2 px-4 column-id'>" . $row["id"]. "</td>
-                                <td class='py-2 px-4 column-nama'>" . $row["nama_barang"]. "</td>
-                                <td class='py-2 px-4 column-jumlah'>" . $row["jumlah"]. "</td>
-                                <td class='py-2 px-4 column-harga'>Rp " . number_format($row["harga"], 0, ',', '.'). "</td>
+                                <td class='py-2 px-4 column-id'>" . $row["id"] . "</td>
+                                <td class='py-2 px-4 column-nama'>" . $row["nama_barang"] . "</td>
+                                <td class='py-2 px-4 column-jumlah'>" . $row["jumlah"] . "</td>
+                                <td class='py-2 px-4 column-harga'>Rp " . number_format($row["harga"], 0, ',', '.') . "</td>
                                 <td class='py-2 px-4 column-action'>
                                     <a class='inline-block bg-green-500 text-white rounded px-3 py-1 hover:opacity-80 transition' href='edit.php?id=" . $row["id"] . "'>Edit</a>
                                     <a class='inline-block bg-red-500 text-white rounded px-3 py-1 hover:opacity-80 transition' href='delete.php?id=" . $row["id"] . "' onclick='return confirm(\"Are you sure you want to delete this item?\")'>Delete</a>
@@ -100,23 +112,25 @@ $result = $conn->query($sql);
             </tbody>
         </table>
         <div class="mt-5 flex items-center justify-between">
-    <span class="text-gray-700">Showing page <?php echo $page; ?> of <?php echo $total_pages; ?></span>
-    
-    <div class="flex items-center space-x-2">
-        <?php if ($page > 1): ?>
-            <a href="?search=<?php echo htmlspecialchars($search); ?>&page=<?php echo $page - 1; ?>" class="px-3 py-2 text-white bg-green-500 rounded hover:bg-green-400 w-24 text-center transition">Previous</a>
-        <?php endif; ?>
-        
-        <form method="GET" class="flex items-center space-x-1">
-            <input type="number" name="page" value="<?php echo $page; ?>" min="1" max="<?php echo $total_pages; ?>" class="border rounded py-2 px-3 w-16 text-center" required>
-            <input type="hidden" name="search" value="<?php echo htmlspecialchars($search); ?>">
-        </form>
-        
-        <?php if ($page < $total_pages): ?>
-            <a href="?search=<?php echo htmlspecialchars($search); ?>&page=<?php echo $page + 1; ?>" class="px-3 py-2 text-white bg-green-500 rounded hover:bg-green-400 w-24 text-center transition">Next</a>
-        <?php endif; ?>
-    </div>
-</div>
+            <span class="text-gray-700">Showing page <?php echo $page; ?> of <?php echo $total_pages; ?></span>
+
+            <div class="flex items-center space-x-2">
+                <!-- prev -->
+                <?php if ($page > 1): ?>
+                    <a href="?search=<?php echo htmlspecialchars($search); ?>&page=<?php echo $page - 1; ?>" class="px-3 py-2 text-white bg-green-500 rounded hover:bg-green-400 w-24 text-center transition"><i class="fa-solid fa-backward"></i></a>
+                <?php endif; ?>
+
+                <form method="GET" class="flex items-center space-x-1">
+                    <input type="number" name="page" value="<?php echo $page; ?>" min="1" max="<?php echo $total_pages; ?>" class="border rounded py-2 px-3 w-16 text-center" required>
+                    <input type="hidden" name="search" value="<?php echo htmlspecialchars($search); ?>">
+                </form>
+
+                <!-- next -->
+                <?php if ($page < $total_pages): ?>
+                    <a href="?search=<?php echo htmlspecialchars($search); ?>&page=<?php echo $page + 1; ?>" class="px-3 py-2 text-white bg-green-500 rounded hover:bg-green-400 w-24 text-center transition"><i class="fa-solid fa-forward"></i></a>
+                <?php endif; ?>
+            </div>
+        </div>
 
     </div>
 </body>
@@ -126,7 +140,5 @@ $result = $conn->query($sql);
         <p class="text-center text-gray-500">Made with ❤️ by <a class="font-bold" href="https://github.com/KidiXDev" target="_blank">KidiXDev</a></p>
     </div>
 </footer>
+
 </html>
-
-
-

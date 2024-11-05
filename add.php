@@ -29,6 +29,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Barang</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 
@@ -45,8 +50,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <label for="harga" class="block text-gray-700 font-bold mb-2">Harga:</label>
             <input type="text" id="harga" name="harga" class="border border-gray-300 rounded-lg p-2 w-full mb-4" value="Rp " required>
 
-            <input type="submit" value="Add" class="bg-blue-500 text-white rounded-lg px-4 py-2 hover:bg-blue-600 cursor-pointer transition">
-            <a class="inline-block bg-gray-400 text-white rounded-lg px-4 py-2 mt-2 hover:bg-gray-500" href="index.php">Cancel</a>
+            <div class="flex gap-8 mt-5">
+                <input type="submit" value="Add" class="bg-green-500 text-white rounded px-4 py-2 w-full hover:bg-green-600 cursor-pointer transition">
+                <a class="inline-block text-center bg-red-500 text-white rounded px-4 py-2 hover:bg-red-600 w-full" href="index.php">Cancel</a>
+            </div>
         </form>
     </div>
 

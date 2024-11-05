@@ -3,12 +3,14 @@ include 'session.php';
 include 'koneksi.php';
 
 $search = isset($_GET['search']) ? $conn->real_escape_string($_GET['search']) : '';
+$sort = isset($_GET['sort']) ? $_GET['sort'] : 'asc';
+$filter_by = isset($_GET['filter_by']) ? $_GET['filter_by'] : 'nama_barang';
 
 $limit = 10;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($page - 1) * $limit;
 
-$total_sql = "SELECT COUNT(*) as total FROM barang WHERE nama_barang LIKE ?";
+$total_sql = "SELECT COUNT(*) as total FROM barang WHERE $filter_by LIKE ?";
 $stmt = $conn->prepare($total_sql);
 $search_param = "%$search%";
 $stmt->bind_param("s", $search_param);
@@ -19,7 +21,8 @@ $total_records = $total_row['total'];
 $total_pages = ceil($total_records / $limit);
 $stmt->close();
 
-$sql = "SELECT id, nama_barang, jumlah, harga FROM barang WHERE nama_barang LIKE ? LIMIT ? OFFSET ?";
+$order_by = $sort === 'desc' ? 'DESC' : 'ASC';
+$sql = "SELECT id, nama_barang, jumlah, harga FROM barang WHERE $filter_by LIKE ? ORDER BY $filter_by $order_by LIMIT ? OFFSET ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("sii", $search_param, $limit, $offset);
 $stmt->execute();
@@ -42,19 +45,74 @@ $result = $stmt->get_result();
 </head>
 
 <body class="bg-gray-100 font-sans">
-    <div class="container mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
-        <h1 class="text-5xl mb-3 font-bold text-center text-green-500">Harusnya Data Barang</h1>
+    <!-- buy me a coffee widget, comment or remove this code to hide it -->
+    <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="kidixdev" data-description="Support me on Buy me a coffee!" data-message="" data-color="#40DCA5" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
 
+    <div class="container mx-auto mt-10 p-6 bg-white rounded-lg shadow-md flex justify-between">
+        <h1 class="text-2xl text-green-600 font-semibold">
+            <i class="fa-solid fa-database"></i> Data Barang
+        </h1>
+
+        <div class="flex items-center space-x-4">
+            <div class="relative">
+                <button class="flex items-center space-x-2 focus:outline-none" onclick="toggleDropdown()">
+                    <i class="fa-solid fa-user text-green-600"></i>
+                    <span class="text-green-600 font-semibold"><?php echo htmlspecialchars($_SESSION['username']); ?></span>
+                    <i class="fa-solid fa-caret-down text-green-600"></i>
+                </button>
+
+                <!-- Dropdown menu -->
+                <div id="dropdownMenu" class="absolute font-semibold right-0 mt-2 w-40 bg-white border rounded-lg shadow-lg hidden">
+                    <a href="logout.php" class="block px-4 py-2 text-gray-800 hover:bg-gray-100"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleDropdown() {
+            const dropdown = document.getElementById("dropdownMenu");
+            dropdown.classList.toggle("hidden");
+        }
+
+        window.addEventListener("click", function(event) {
+            const dropdown = document.getElementById("dropdownMenu");
+            if (!event.target.closest(".relative")) {
+                dropdown.classList.add("hidden");
+            }
+        });
+    </script>
+
+
+
+    <div class="container mx-auto mt-5 p-6 bg-white rounded-lg shadow-md">
         <div class="flex justify-between mb-5">
-            <!-- Search Form -->
-            <form method="GET" class="flex">
-                <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>" placeholder="Search" class="border rounded-l py-2 px-4 flex-1">
-                <button type="submit" class="bg-green-500 text-white rounded-r px-4 py-2 hover:opacity-80 transition"><i class="fa-solid fa-magnifying-glass"></i> </button>
-            </form>
+            <div class="flex gap-2">
+                <!-- Search Form -->
+                <form method="GET" class="flex">
+                    <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>" placeholder="Search" class="border rounded-l py-2 px-4 flex-1">
+                    <button type="submit" class="bg-green-500 text-white rounded-r px-4 py-2 hover:opacity-80 transition"><i class="fa-solid fa-magnifying-glass"></i> </button>
+                </form>
+
+                <!-- Filter Form -->
+                <form method="GET" class="flex items-center space-x-2">
+                    <input type="hidden" name="search" value="<?php echo htmlspecialchars($search); ?>">
+                    <select name="filter_by" class="border rounded py-2 px-4">
+                        <option value="nama_barang" <?php echo $filter_by === 'nama_barang' ? 'selected' : ''; ?>>Nama Barang</option>
+                        <option value="id" <?php echo $filter_by === 'id' ? 'selected' : ''; ?>>ID</option>
+                        <option value="jumlah" <?php echo $filter_by === 'jumlah' ? 'selected' : ''; ?>>Jumlah</option>
+                        <option value="harga" <?php echo $filter_by === 'harga' ? 'selected' : ''; ?>>Harga</option>
+                    </select>
+                    <select name="sort" class="border rounded py-2 px-4">
+                        <option value="asc" <?php echo $sort === 'asc' ? 'selected' : ''; ?>>Ascending</option>
+                        <option value="desc" <?php echo $sort === 'desc' ? 'selected' : ''; ?>>Descending</option>
+                    </select>
+                    <button type="submit" class="bg-green-500 text-white rounded px-4 py-2 hover:opacity-80 transition"><i class="fa-solid fa-filter"></i></button>
+                </form>
+            </div>
 
             <div class="flex gap-3">
-                <a class='inline-block w-28 text-center content-center bg-red-500 text-white rounded px-3 py-1 hover:opacity-80 transition' href="logout.php"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
-                <a class='inline-block w-28 text-center content-center bg-green-500 text-white rounded px-3 py-1 hover:opacity-80 transition' href='add.php'><i class="fa-solid fa-plus"></i> Add</a>
+                <a class='inline-block text-center content-center bg-green-500 text-white rounded px-4 py-1 hover:opacity-80 transition' href='add.php'><i class="fa-solid fa-plus"></i></a>
             </div>
         </div>
 
@@ -65,7 +123,7 @@ $result = $stmt->get_result();
                     <th class="py-3 px-4 column-nama text-left">Nama Barang</th>
                     <th class="py-3 px-4 column-jumlah text-left">Jumlah</th>
                     <th class="py-3 px-4 column-harga text-left">Harga</th>
-                    <th class="py-3 px-4 column-action text-left">Action</th>
+                    <th class="py-3 px-4 column-action text-center">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -75,13 +133,13 @@ $result = $stmt->get_result();
                     while ($row = $result->fetch_assoc()) {
                         $rowClass = $counter % 2 === 0 ? 'bg-white' : 'bg-gray-100';
                         echo "<tr class='$rowClass hover:bg-gray-200'>
-                                <td class='py-2 px-4 column-id'>" . $row["id"] . "</td>
-                                <td class='py-2 px-4 column-nama'>" . $row["nama_barang"] . "</td>
-                                <td class='py-2 px-4 column-jumlah'>" . $row["jumlah"] . "</td>
-                                <td class='py-2 px-4 column-harga'>Rp " . number_format($row["harga"], 0, ',', '.') . "</td>
-                                <td class='py-2 px-4 column-action'>
-                                    <a class='inline-block bg-green-500 text-white rounded px-3 py-1 hover:opacity-80 transition' href='edit.php?id=" . $row["id"] . "'>Edit</a>
-                                    <a class='inline-block bg-red-500 text-white rounded px-3 py-1 hover:opacity-80 transition' href='delete.php?id=" . $row["id"] . "' onclick='return confirm(\"Are you sure you want to delete this item?\")'>Delete</a>
+                                <td class='py-2 px-4 '>" . $row["id"] . "</td>
+                                <td class='py-2 px-4'>" . $row["nama_barang"] . "</td>
+                                <td class='py-2 px-4'>" . $row["jumlah"] . "</td>
+                                <td class='py-2 px-4'>Rp " . number_format($row["harga"], 0, ',', '.') . "</td>
+                                <td class='py-2 px-4 text-center'>
+                                    <a class='inline-block bg-green-500 text-white rounded px-3 py-1 hover:opacity-80 transition' href='edit.php?id=" . $row["id"] . "'><i class='fa-solid fa-pen-to-square'></i></a>
+                                    <a class='inline-block bg-red-500 text-white rounded px-3 py-1 hover:opacity-80 transition' href='delete.php?id=" . $row["id"] . "&search=" . htmlspecialchars($search) . "&page=" . $page . "' onclick='return confirm(\"Are you sure you want to delete this item?\")'><i class='fa-solid fa-trash'></i></a>
                                 </td>
                               </tr>";
                         $counter++;
@@ -99,17 +157,19 @@ $result = $stmt->get_result();
             <div class="flex items-center space-x-2">
                 <!-- prev -->
                 <?php if ($page > 1): ?>
-                    <a href="?search=<?php echo htmlspecialchars($search); ?>&page=<?php echo $page - 1; ?>" class="px-5 py-2 text-white bg-green-500 rounded hover:bg-green-400 text-center transition"><i class="fa-solid fa-backward"></i></a>
+                    <a href="?search=<?php echo htmlspecialchars($search); ?>&page=<?php echo $page - 1; ?>&sort=<?php echo $sort; ?>&filter_by=<?php echo $filter_by; ?>" class="px-5 py-2 text-white bg-green-500 rounded hover:bg-green-400 text-center transition"><i class="fa-solid fa-backward"></i></a>
                 <?php endif; ?>
 
                 <form method="GET" class="flex items-center space-x-1">
                     <input type="number" name="page" value="<?php echo $page; ?>" min="1" max="<?php echo $total_pages; ?>" class="border rounded py-2 px-3 w-16 text-center" required>
                     <input type="hidden" name="search" value="<?php echo htmlspecialchars($search); ?>">
+                    <input type="hidden" name="sort" value="<?php echo htmlspecialchars($sort); ?>">
+                    <input type="hidden" name="filter_by" value="<?php echo htmlspecialchars($filter_by); ?>">
                 </form>
 
                 <!-- next -->
                 <?php if ($page < $total_pages): ?>
-                    <a href="?search=<?php echo htmlspecialchars($search); ?>&page=<?php echo $page + 1; ?>" class="px-5 py-2 text-white bg-green-500 rounded hover:bg-green-400 text-center transition"><i class="fa-solid fa-forward"></i></a>
+                    <a href="?search=<?php echo htmlspecialchars($search); ?>&page=<?php echo $page + 1; ?>&sort=<?php echo $sort; ?>&filter_by=<?php echo $filter_by; ?>" class="px-5 py-2 text-white bg-green-500 rounded hover:bg-green-400 text-center transition"><i class="fa-solid fa-forward"></i></a>
                 <?php endif; ?>
             </div>
         </div>

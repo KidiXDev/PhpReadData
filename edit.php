@@ -57,8 +57,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <label for="harga" class="block text-gray-700 font-bold mb-2">Harga:</label>
             <input type="text" id="harga" name="harga" value="Rp <?php echo number_format($row['harga'], 0, ',', '.'); ?>" class="border border-gray-300 rounded-lg p-2 w-full mb-4" required>
 
-            <input type="submit" value="Update" class="bg-blue-500 text-white rounded-lg px-4 py-2 hover:bg-blue-600 cursor-pointer transition">
-            <a class="inline-block bg-gray-400 text-white rounded-lg px-4 py-2 mt-2 hover:bg-gray-500" href="index.php">Cancel</a>
+            <div class="flex gap-8 mt-5">
+                <input type="submit" value="Update" class="bg-green-500 text-white rounded px-4 py-2 w-full hover:bg-green-600 cursor-pointer transition">
+                <a class="inline-block bg-red-500 text-white rounded px-4 py-2 w-full text-center hover:bg-red-600" href="index.php">Cancel</a>
+            </div>
         </form>
     </div>
 

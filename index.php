@@ -64,7 +64,7 @@ $result = $conn->query($sql);
 
 <body class="bg-gray-100 font-sans">
     <div class="container mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
-        <h1 class="text-5xl mb-3 font-semibold text-center text-green-500">Data Barang</h1>
+        <h1 class="text-5xl mb-3 font-bold text-center text-green-500">Harusnya Data Barang</h1>
 
         <div class="flex justify-between mb-5">
             <!-- Search Form -->
@@ -136,7 +136,7 @@ $result = $conn->query($sql);
 </body>
 <footer>
     <div class="container mx-auto mt-2 p-6">
-        <p class="text-center text-gray-500">Native <span class="line-through">C</span>RUD App Without Bootstrap</p>
+        <p class="text-center text-gray-500">Native CRUD App Without Bootstrap</p>
         <p class="text-center text-gray-500">Made with ❤️ by <a class="font-bold" href="https://github.com/KidiXDev" target="_blank">KidiXDev</a></p>
     </div>
 </footer>

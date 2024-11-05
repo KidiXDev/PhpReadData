@@ -39,41 +39,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <input type="number" id="jumlah" name="jumlah" class="border border-gray-300 rounded-lg p-2 w-full mb-4" required>
 
             <label for="harga" class="block text-gray-700 font-bold mb-2">Harga:</label>
-            <input type="text" id="harga" name="harga" class="border border-gray-300 rounded-lg p-2 w-full mb-4" required>
+            <input type="text" id="harga" name="harga" class="border border-gray-300 rounded-lg p-2 w-full mb-4" value="Rp " required>
 
             <input type="submit" value="Add" class="bg-blue-500 text-white rounded-lg px-4 py-2 hover:bg-blue-600 cursor-pointer transition">
             <a class="inline-block bg-gray-400 text-white rounded-lg px-4 py-2 mt-2 hover:bg-gray-500" href="index.php">Cancel</a>
         </form>
     </div>
 
-    <script>
-        const hargaInput = document.getElementById('harga');
-
-        function formatRupiah(angka, prefix = 'Rp ') {
-            let number_string = angka.replace(/[^,\d]/g, '').toString(),
-                split = number_string.split(','),
-                sisa = split[0].length % 3,
-                rupiah = split[0].substr(0, sisa),
-                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
-
-            if (ribuan) {
-                let separator = sisa ? '.' : '';
-                rupiah += separator + ribuan.join('.');
-            }
-
-            rupiah = split[1] !== undefined ? rupiah + ',' + split[1] : rupiah;
-            return prefix + rupiah;
-        }
-
-        hargaInput.addEventListener('keyup', function(e) {
-            hargaInput.value = formatRupiah(this.value);
-        });
-
-        // Menghapus format saat form disubmit
-        document.querySelector('form').addEventListener('submit', function() {
-            hargaInput.value = hargaInput.value.replace(/Rp |\.|,/g, '');
-        });
-    </script>
+    <script src="scripts/convert.js"></script>
 </body>
 
 </html>

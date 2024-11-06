@@ -94,7 +94,7 @@ To set up PhpReadData locally, follow these steps:
 
      -- Insert the default admin user
      INSERT INTO `users` (`id`, `username`, `password`) VALUES
-     (1, 'Useradmin', 'ad173b6d7864f0dbcfcef93fb926cf66');
+       (1, 'Useradmin', '$2y$10$qRRibBMGw54cwpXVYcjjtOm.qQ5TSB.5zf7yE7a0LG5nTmLMzUETm');
 
      -- Set primary keys and auto-increment properties
      ALTER TABLE `barang`

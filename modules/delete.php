@@ -1,17 +1,16 @@
 <?php
-include 'koneksi.php';
+include 'config/config.php';
 
 if (isset($_GET['id'])) {
-    $id = $_GET['id'];
-    $page = $_GET['page'];
-    $search = isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '';
+    $id = isset($_GET['id']) && is_numeric($_GET['id']) ? $_GET['id'] : 0;
 
     $sql = "DELETE FROM barang WHERE id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $id);
 
     if ($stmt->execute()) {
-        header("Location: index.php?search=" . $search . "&page=" . $page);
+        $referer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/';
+        header("Location: " . $referer);
         exit();
     } else {
         echo "Error deleting record: " . $conn->error;
